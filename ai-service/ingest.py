@@ -1,0 +1,38 @@
+# Transcript → Documents → Split → Embeddings → Vector DB
+
+import os
+from dotenv import load_dotenv
+from youtube_transcript_api import YouTubeTranscriptApi
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+load_dotenv()
+
+def load_youtube_transcript(video_id):
+    fetched_transcript = YouTubeTranscriptApi().fetch(video_id)
+    raw_transcript = fetched_transcript.to_raw_data()
+    full_text = " ".join([t["text"].strip() for t in raw_transcript])
+    return full_text
+
+def create_documents(text):
+    return [Document(page_content=text)]
+
+def split_documents(documents):
+    text_splitter  = RecursiveCharacterTextSplitter(
+        chunk_size= 1000,
+        chunk_overlap=200
+    )
+    return text_splitter.split_documents(documents)
+
+
+if __name__ == "__main__":
+    video_id = "dQw4w9WgXcQ"
+
+    text = load_youtube_transcript(video_id)
+    docs = create_documents(text)
+    print("Docs", docs)
+
+    chunks = split_documents(docs)
+    
+    print("Number of chunks:", len(chunks))
+    print("\nFirst chunk:\n", chunks[0].page_content[:300])
