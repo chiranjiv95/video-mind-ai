@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
 
@@ -18,6 +19,21 @@ def load_vector_store():
 
     return vectorstore
 
+prompt_template = PromptTemplate(
+    input_variables=["context", "question"],
+    template="""
+You are a helpful assistant.
+
+Answer the question ONLY using the context below.
+
+Context:
+{context}
+
+Question:
+{question}
+"""
+)
+
 
 def ask_question(question):
     vectorstore = load_vector_store()
@@ -32,19 +48,14 @@ def ask_question(question):
 
     llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview")
 
-    prompt = f"""
-    Answer the question based only on the context below.
-
-    Context:
-    {context}
-
-    Question:
-    {question}
-    """
+    prompt = prompt_template.format(
+    context = context,
+    question = question
+    )
 
     response = llm.invoke(prompt)
 
-    return response.content
+    return response.content[0]["text"]
 
 
 if __name__ == "__main__":
