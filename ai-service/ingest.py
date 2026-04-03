@@ -6,6 +6,9 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_chroma import Chroma
+
 load_dotenv()
 
 def load_youtube_transcript(video_id):
@@ -24,6 +27,19 @@ def split_documents(documents):
     )
     return text_splitter.split_documents(documents)
 
+def create_vector_store(chunks):
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="gemini-embedding-001"
+    )
+
+    vectorstore = Chroma.from_documents(
+        documents=chunks,
+        embedding=embeddings,
+        persist_directory="./chroma_db"
+    )
+
+    return vectorstore
+
 
 if __name__ == "__main__":
     video_id = "dQw4w9WgXcQ"
@@ -33,6 +49,9 @@ if __name__ == "__main__":
     print("Docs", docs)
 
     chunks = split_documents(docs)
+    vectorstore = create_vector_store(chunks)
+
+    print("Vector store created successfully ✅")
     
     print("Number of chunks:", len(chunks))
     print("\nFirst chunk:\n", chunks[0].page_content[:300])
