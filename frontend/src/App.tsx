@@ -3,19 +3,25 @@ import axios from "axios";
 import "./App.css";
 
 function App() {
+  const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
 
   const handleAsk = async () => {
+    if (!question.trim()) return;
+
+    const newMessages = [...messages, { role: "user", text: question }];
+    setMessages(newMessages);
+
     try {
       const res = await axios.post("http://localhost:5000/api/chat", {
         question,
       });
 
-      setAnswer(res.data.answer);
+      setMessages([...newMessages, { role: "ai", text: res.data.answer }]);
+
+      setQuestion("");
     } catch (err) {
       console.error(err);
-      setAnswer("Error fetching response");
     }
   };
 
@@ -35,8 +41,12 @@ function App() {
         <button onClick={handleAsk}>Ask</button>
 
         <div style={{ marginTop: "20px" }}>
-          <strong>Answer:</strong>
-          <p>{answer}</p>
+          {messages.map((msg, index) => (
+            <div key={index} style={{ marginBottom: "10px" }}>
+              <strong>{msg.role === "user" ? "You" : "AI"}:</strong>
+              <p>{msg.text}</p>
+            </div>
+          ))}
         </div>
       </section>
     </>
