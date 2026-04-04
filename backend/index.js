@@ -19,7 +19,7 @@ app.post("/api/ingest", async (req, res) => {
     const { video_id } = req.body;
 
     const response = await axios.post(
-      "https://vidchat-ai.onrender.com/ingest",
+      "https://video-mind-ai-1.onrender.com/ingest",
       {
         video_id,
       },
@@ -35,9 +35,12 @@ app.post("/api/chat", async (req, res) => {
   try {
     const { question } = req.body;
 
-    const response = await axios.post("https://vidchat-ai.onrender.com/chat", {
-      question,
-    });
+    const response = await axios.post(
+      "https://video-mind-ai-1.onrender.com/chat",
+      {
+        question,
+      },
+    );
 
     res.json(response.data);
   } catch (error) {
