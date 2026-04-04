@@ -10,6 +10,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const AI_BASE_URL = process.env.AI_BASE_URL;
+
 app.get("/", (req, res) => {
   res.send("Backend is running!");
 });
@@ -18,12 +20,10 @@ app.post("/api/ingest", async (req, res) => {
   try {
     const { video_id } = req.body;
 
-    const response = await axios.post(
-      "https://video-mind-ai-1.onrender.com/ingest",
-      {
-        video_id,
-      },
-    );
+    console.log("AI_BASE_URL", AI_BASE_URL);
+    const response = await axios.post(`${AI_BASE_URL}/ingest`, {
+      video_id,
+    });
 
     console.log("response ", response.data);
 
@@ -38,12 +38,9 @@ app.post("/api/chat", async (req, res) => {
   try {
     const { question } = req.body;
 
-    const response = await axios.post(
-      "https://video-mind-ai-1.onrender.com/chat",
-      {
-        question,
-      },
-    );
+    const response = await axios.post(`${AI_BASE_URL}/chat`, {
+      question,
+    });
 
     res.json(response.data);
   } catch (error) {

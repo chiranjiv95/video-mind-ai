@@ -11,6 +11,8 @@ type Message = {
 
 type StatusState = "idle" | "loading" | "ready" | "error";
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 export default function App() {
   const [videoId, setVideoId] = useState("");
   const [statusState, setStatusState] = useState<StatusState>("idle");
@@ -33,7 +35,7 @@ export default function App() {
     setStatusText("Processing…");
 
     try {
-      await axios.post("https://video-mind-ai.onrender.com/api/ingest", {
+      await axios.post(`${baseUrl}/api/ingest`, {
         video_id: videoId,
       });
       setStatusState("ready");
@@ -57,12 +59,9 @@ export default function App() {
     setMessages((prev) => [...prev, userMsg, typingMsg]);
 
     try {
-      const res = await axios.post(
-        "https://video-mind-ai.onrender.com/api/chat",
-        {
-          question: q,
-        },
-      );
+      const res = await axios.post(`${baseUrl}/api/chat`, {
+        question: q,
+      });
       setMessages((prev) => [
         ...prev.filter((m) => !m.typing),
         { role: "ai", text: res.data.answer, sources: res.data.sources },

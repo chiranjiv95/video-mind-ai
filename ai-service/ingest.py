@@ -6,7 +6,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+# from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
@@ -34,7 +34,7 @@ def create_vector_store(chunks):
     # )
 
     embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
+        model_name="paraphrase-MiniLM-L3-v2"
     )
 
     vectorstore = Chroma.from_documents(

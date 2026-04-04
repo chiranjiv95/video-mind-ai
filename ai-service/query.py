@@ -9,13 +9,15 @@ from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
 
+hf_api_key = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+
 def load_vector_store():
     # embeddings = GoogleGenerativeAIEmbeddings(
     #     model="gemini-embedding-001"
     # )
 
     embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
+        model_name="paraphrase-MiniLM-L3-v2"
     )
 
     vectorstore = Chroma(
@@ -54,11 +56,21 @@ def ask_question(question):
 
     # llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview")
 
+    # llm = HuggingFaceEndpoint(
+    # repo_id="openai/gpt-oss-20b",
+    # task="text-generation",
+    # max_new_tokens=512
+    # )
+
+    repo_id = "openai/gpt-oss-20b"
+
     llm = HuggingFaceEndpoint(
-    repo_id="openai/gpt-oss-20b",
-    task="text-generation",
-    max_new_tokens=512
+        repo_id=repo_id,
+        max_new_tokens=512,
+        temperature=0.5,
+        huggingfacehub_api_token=hf_api_key
     )
+
 
     prompt = prompt_template.format(
     context = context,
