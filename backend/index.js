@@ -15,9 +15,12 @@ app.post("/api/ingest", async (req, res) => {
   try {
     const { video_id } = req.body;
 
-    const response = await axios.post("http://localhost:8000/ingest", {
-      video_id,
-    });
+    const response = await axios.post(
+      "https://vidchat-ai.onrender.com/ingest",
+      {
+        video_id,
+      },
+    );
 
     res.json(response.data);
   } catch (error) {
@@ -29,7 +32,7 @@ app.post("/api/chat", async (req, res) => {
   try {
     const { question } = req.body;
 
-    const response = await axios.post("http://localhost:8000/chat", {
+    const response = await axios.post("https://vidchat-ai.onrender.com/chat", {
       question,
     });
 
