@@ -25,8 +25,11 @@ app.post("/api/ingest", async (req, res) => {
       },
     );
 
+    console.log("response ", response);
+
     res.json(response.data);
   } catch (error) {
+    console.error("error response ", error);
     res.status(500).json({ error: error.message });
   }
 });
