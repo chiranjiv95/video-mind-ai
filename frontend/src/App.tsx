@@ -33,7 +33,7 @@ export default function App() {
     setStatusText("Processing…");
 
     try {
-      await axios.post("http://localhost:5000/api/ingest", {
+      await axios.post("https://video-mind-ai.onrender.com/api/ingest", {
         video_id: videoId,
       });
       setStatusState("ready");
@@ -57,9 +57,12 @@ export default function App() {
     setMessages((prev) => [...prev, userMsg, typingMsg]);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/chat", {
-        question: q,
-      });
+      const res = await axios.post(
+        "https://video-mind-ai.onrender.com/api/chat",
+        {
+          question: q,
+        },
+      );
       setMessages((prev) => [
         ...prev.filter((m) => !m.typing),
         { role: "ai", text: res.data.answer, sources: res.data.sources },
