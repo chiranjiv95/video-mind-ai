@@ -70,7 +70,9 @@ def ask_question(question):
     response = model.invoke(prompt)
     print('response', response)
 
-    return response.content[0]["text"]
+    # return response.content[0]["text"]
+    return response.content
+
 
 
 if __name__ == "__main__":
