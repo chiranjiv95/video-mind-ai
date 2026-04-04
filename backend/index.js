@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const app = express();
 
@@ -42,6 +45,8 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log("Server runnning on port 5000");
+const PORT = process.env.PORT || 8000;
+
+app.listen(PORT, () => {
+  console.log(`Server runnning on port ${PORT}`);
 });
