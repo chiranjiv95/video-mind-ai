@@ -1,6 +1,8 @@
 node_modules/
 venv/
 .env
+.env.production
+.env.development
 __pycache__/
 *.pyc
 dist/

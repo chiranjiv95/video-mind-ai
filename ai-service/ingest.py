@@ -6,8 +6,8 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+# from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
 load_dotenv()
@@ -29,13 +29,13 @@ def split_documents(documents):
     return text_splitter.split_documents(documents)
 
 def create_vector_store(chunks):
-    # embeddings = GoogleGenerativeAIEmbeddings(
-    #     model="gemini-embedding-001"
-    # )
-
-    embeddings = HuggingFaceEmbeddings(
-        model_name="paraphrase-MiniLM-L3-v2"
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="gemini-embedding-001"
     )
+
+    # embeddings = HuggingFaceEmbeddings(
+    #     model_name="paraphrase-MiniLM-L3-v2"
+    # )
 
     vectorstore = Chroma.from_documents(
         documents=chunks,

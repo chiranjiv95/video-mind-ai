@@ -1,10 +1,10 @@
 import os
 from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_huggingface import ChatHuggingFace, HuggingFaceEmbeddings
+# from langchain_huggingface import ChatHuggingFace, HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_huggingface import HuggingFaceEndpoint
+# from langchain_huggingface import HuggingFaceEndpoint
 from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
@@ -12,13 +12,13 @@ load_dotenv()
 hf_api_key = os.getenv("HUGGINGFACEHUB_API_TOKEN")
 
 def load_vector_store():
-    # embeddings = GoogleGenerativeAIEmbeddings(
-    #     model="gemini-embedding-001"
-    # )
-
-    embeddings = HuggingFaceEmbeddings(
-        model_name="paraphrase-MiniLM-L3-v2"
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="gemini-embedding-001"
     )
+
+    # embeddings = HuggingFaceEmbeddings(
+    #     model_name="paraphrase-MiniLM-L3-v2"
+    # )
 
     vectorstore = Chroma(
         persist_directory="./chroma_db",
@@ -54,7 +54,7 @@ def ask_question(question):
     # 👉 Combine chunks into one input for LLM
     context = "\n\n".join([doc.page_content for doc in docs])
 
-    # llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview")
+    llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview")
 
     # llm = HuggingFaceEndpoint(
     # repo_id="openai/gpt-oss-20b",
@@ -62,14 +62,14 @@ def ask_question(question):
     # max_new_tokens=512
     # )
 
-    repo_id = "openai/gpt-oss-20b"
+    # repo_id = "openai/gpt-oss-20b"
 
-    llm = HuggingFaceEndpoint(
-        repo_id=repo_id,
-        max_new_tokens=512,
-        temperature=0.5,
-        huggingfacehub_api_token=hf_api_key
-    )
+    # llm = HuggingFaceEndpoint(
+    #     repo_id=repo_id,
+    #     max_new_tokens=512,
+    #     temperature=0.5,
+    #     huggingfacehub_api_token=hf_api_key
+    # )
 
 
     prompt = prompt_template.format(
@@ -77,13 +77,13 @@ def ask_question(question):
     question = question
     )
 
-    model = ChatHuggingFace(llm=llm)
+    # model = ChatHuggingFace(llm=llm)
 
-    response = model.invoke(prompt)
-    print('response', response)
+    response = llm.invoke(prompt)
+    print('response from ask question', response.data)
 
-    # return response.content[0]["text"]
-    return response.content
+    return response.content[0]["text"]
+    # return response.content
 
 
 
