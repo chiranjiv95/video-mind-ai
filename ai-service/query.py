@@ -1,5 +1,8 @@
 import os
+import logging
 from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 # from langchain_huggingface import ChatHuggingFace, HuggingFaceEmbeddings
 from langchain_chroma import Chroma
@@ -44,12 +47,15 @@ Question:
 
 
 def ask_question(question):
+    logger.info(f"Loading vector store for question: {question}")
     vectorstore = load_vector_store()
 
     # 👉 Converts DB → search engine
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 3}) # 👉 Get top 3 relevant chunks
+    # 👉 Get top 3 relevant chunks
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 3}) 
 
     docs = retriever.invoke(question)
+    logger.info(f"Retrieved {len(docs)} documents as context.")
 
     # 👉 Combine chunks into one input for LLM
     context = "\n\n".join([doc.page_content for doc in docs])
@@ -80,7 +86,7 @@ def ask_question(question):
     # model = ChatHuggingFace(llm=llm)
 
     response = llm.invoke(prompt)
-    print('response from ask question', response.data)
+    logger.info("Response received from LLM.")
 
     return response.content[0]["text"]
     # return response.content

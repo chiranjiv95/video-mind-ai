@@ -40,9 +40,15 @@ export default function App() {
       });
       setStatusState("ready");
       setStatusText("Ready to chat");
-    } catch {
+    } catch (error: any) {
+      console.error("[Ingest Error] Request failed:", error);
+      if (error.response?.data?.error) {
+        console.error("Backend returned error detail:", error.response.data.error);
+        setStatusText(`Error: ${error.response.data.error}`);
+      } else {
+        setStatusText("Failed to load");
+      }
       setStatusState("error");
-      setStatusText("Failed to load");
     } finally {
       setIsIngesting(false);
     }
@@ -66,10 +72,12 @@ export default function App() {
         ...prev.filter((m) => !m.typing),
         { role: "ai", text: res.data.answer, sources: res.data.sources },
       ]);
-    } catch {
+    } catch (error: any) {
+      console.error("[Chat Error] Request failed:", error);
+      const errorMessage = error.response?.data?.error || "Sorry, something went wrong. Please try again.";
       setMessages((prev) => [
         ...prev.filter((m) => !m.typing),
-        { role: "ai", text: "Sorry, something went wrong. Please try again." },
+        { role: "ai", text: `Error: ${errorMessage}` },
       ]);
     } finally {
       setIsAsking(false);
